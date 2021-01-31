@@ -94,7 +94,7 @@ SINGLE-PURPOSE DATABASE
 14  mysqlConnection.end();
 15  
 16  // Step 2.a: Then, using the bookingIds, determine which bookings had been with 'friends' the user had been connected with for over 3 years by returning results from Neo4j
-17  nep4jFilteredBookingIds = [];
+17  neo4jFilteredBookingIds = [];
 18  session.run(
 19      'MATCH (u:Person)-[:IS_FRIENDS_WITH]-(friends) WHERE u.id = $user_id AND friends.friendship_length > $fLength RETURN FILTER(x in friends.booking_ids WHERE x IN $userBookingIds)',
 20      { userId: user_id,
