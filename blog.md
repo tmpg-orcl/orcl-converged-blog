@@ -11,29 +11,31 @@ SINGLE-PURPOSE DATABASE
 ```
 
 ```js
-1   // JS
-2   // ...
-3   // CONNECT TO MONGODB CLIENT
-4   let mongoClient = require('mongodb').MongoClient; // includes Mongodb module
-5      MongoCLient.connect(mongoURL,mongoOptions, (err, client) => {
-6          if (err) {/* ERROR HANDLING */} else {/* CONNECTED TO MONGODB */}
-7      });
-8   // CONECT TO NEO4J
-9   const neo4j = require('neo4k-driver'); //include Neo4j module
-10  const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
-11  const neo4jSession = driver.session();
-12      try {
-13        const result = await neo4jSession.run(/* CONNECTED TO NEO4J */);
-14      } finally {
-15        await session.close();
-16      }
-17  // CONECT TO MYSQL CLIENT
-18  var mysql = require('mysql'); 
-19  var mysqlConnection = mysql.createConnection({/* CONNECTION INFO */})
-20  mysqlConnection.connect((err) => {
-21      if(err) {/* ERROR HANDLING */} else {/* CONNECTED TO MYSQL */}       
-22  });
-23  // ...
+// DEMONSTRATION PURPOSES ONLY
+// JS
+// ...
+// CONNECT TO MONGODB CLIENT
+let mongoClient = require('mongodb').MongoClient; // includes Mongodb module
+    MongoCLient.connect(mongoURL,mongoOptions, (err, client) => {
+       if (err) {/* ERROR HANDLING */} else {/* CONNECTED TO MONGODB */}
+   });
+// CONECT TO NEO4J
+const neo4j = require('neo4k-driver'); //include Neo4j module
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+const neo4jSession = driver.session();
+    try {
+      const result = await neo4jSession.run(/* CONNECTED TO NEO4J */);
+    } finally {
+      await session.close();
+    }
+// CONECT TO MYSQL CLIENT
+var mysql = require('mysql'); 
+var mysqlConnection = mysql.createConnection({/* CONNECTION INFO */})
+mysqlConnection.connect((err) => {
+    if(err) {/* ERROR HANDLING */} else {/* CONNECTED TO MYSQL */}       
+});
+// ...
+// DEMONSTRATION PURPOSES ONLY
 ```
 
 ```
@@ -48,29 +50,24 @@ ORACLE CONVERGED DATABASE
 ```
 
 ```js
-1   // JS
-2   // ...
-3   // CONNECT TO ORACLE DB CLIENT
-4   const oracledb = require('oracledb');
-5   function otacleDbConnect(dbOptions) {
-6       return new Promise(async (resolve, reject) => {
-7           try {
-8               await oracledb.getConnection(dbOptions).then(conn => {
-9                   resolve(/* CONNECTED TO ORACLE DB */);
-10              });
-11          } catch (err) {     
-12              reject(err);  
-13          } 
-14      });
-15  }
-16
-17
-18 
-19
-20
-21       
-22 
-23  // ...
+// DEMONSTRATION PURPOSES ONLY
+// JS
+// ...
+// CONNECT TO ORACLE DB CLIENT
+const oracledb = require('oracledb');
+function otacleDbConnect(dbOptions) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await oracledb.getConnection(dbOptions).then(conn => {
+                resolve(/* CONNECTED TO ORACLE DB */);
+            });
+        } catch (err) {     
+            reject(err);  
+        } 
+    });
+}
+// ...
+// DEMONSTRATION PURPOSES ONLY
 ```
 
 ```
@@ -78,48 +75,46 @@ SINGLE-PURPOSE DATABASE
 ```
 
 ```js
-1   // JS
-2   // The Objective of the query is to return the user's session history of any BnB booked on 12/20/2020 which included 'friends' the user had been connected with for over 3 years
-3   // The variables "user_id", "bookings_data", "friendship_length" predefined
-4
-5   // Step 1.a: Lets apporach this problem by querying and pulling all the "bookingIds" the user had on 12/20/2020 from the MySql Database
-6    // ...
-7   mysqlBookingIds = [];
-8   mysqlConnection.query('SELECT BOOKING_ID FROM USER_BOOKINGS WHERE USER_ID = ? AND BOOKING_DATE = ? AS bookings', [user_id, booking_date], (error, results, fields) => {
-9       if (error) throw error;
-10      // Step 1.b: Clean 'mysqlBookingIds' for use in next step (think ETL)
-11      mysqlBookingIds = transformResult(results) {/* ... */};
-12  });     
-13
-14  mysqlConnection.end();
-15  
-16  // Step 2.a: Then, using the bookingIds, determine which bookings had been with 'friends' the user had been connected with for over 3 years by returning results from Neo4j
-17  neo4jFilteredBookingIds = [];
-18  session.run(
-19      'MATCH (u:Person)-[:IS_FRIENDS_WITH]-(friends) WHERE u.id = $user_id AND friends.friendship_length > $fLength RETURN FILTER(x in friends.booking_ids WHERE x IN $userBookingIds)',
-20      { userId: user_id,
-21        fLength: friendship_length,
-22        userBookingIds: mysqlBookingIds
-23      }).then(result => {
-24          // Step 2.b: Clean 'nep4jFilteredBookingIds' for use in next step (think ETL)
-25          neo4jFilteredBookingIds = transformResult(result.records) {/* ... */};
-26      }).catch (error => {
-27          console.log(error);
-28      }).then(() => session.close())
-29  // Step 3: Finally, using nep4jFilteredBookingIds, return the user's session history from MongoDB
-30  finalResult = [];   
-31  MongoClient.connect(url,monoOptions, (err, client) => {
-32      if(err) console.log(err);
-33      const db = client.db(DB_NAME);
-34      const userHistoryCollection = db.collection(COLLECTION_USER_HISTORY);
-35      userHistoryCollection.find({"user_id":{$eq: [user_id]}}, {"session_history_of_booking": {"$in": [neo4jFilteredBookingIds]}}).toArray((err, items) => {
-36          if (err) console.log(err);
-37          finalResult = items;
-38      })
-39  });
-40
-41  console.log(finalResults); // Print final result
-42  // ...
+// DEMONSTRATION PURPOSES ONLY
+// JS
+// Use Case: Host-a-BnB (vacation rental company) wants to build a dashboard that visualizes sessions data of users who booked BnBs at a given date with long term friends (> 5 year). 
+// The query below will pull booking sessions data using predefined variables VAR_USER_ID, VAR_BOOKING_DATE, and VAR_FRIENDSHIP_LENGTH.
+// Step 1.a: Lets apporach this problem by querying and pulling all the "bookingIds" the user had on the BOOKING_DATE from the MySql Database
+// ...
+mysqlBookingIds = [];
+mysqlConnection.query('SELECT BOOKING_ID FROM BOOKINGS WHERE USER_ID = ? AND BOOKING_DATE = ? AS bookings', [VAR_USER_ID, VAR_BOOKING_DATE], (error, results, fields) => {
+    if (error) throw error;
+    // Step 1.b: Clean 'mysqlBookingIds' for use in next step (think ETL)
+    mysqlBookingIds = transformResult(results) {/* ... */};
+});     
+mysqlConnection.end();
+// Step 2.a: Then, using the bookingIds, query which bookings had friends with VAR_FRIENDSHIP_LENGTH > 5 years from Neo4j
+neo4jFilteredBookingIds = [];
+session.run(
+    'MATCH (u:Person)-[:IS_FRIENDS_WITH]-(friends) WHERE u.id = $user_id AND friends.friendship_length > $fLength RETURN FILTER(x in friends.booking_ids WHERE x IN $userBookingIds)',
+    { userId: VAR_USER_ID,
+      fLength: VAR_FRIENDSHIP_LENGTH,
+      userBookingIds: mysqlBookingIds
+    }).then(result => {
+        // Step 2.b: Clean 'nep4jFilteredBookingIds' for use in next step (think ETL)
+        neo4jFilteredBookingIds = transformResult(result.records) {/* ... */};
+    }).catch (error => {
+        console.log(error);
+    }).then(() => session.close())
+// Step 3: Finally, using nep4jFilteredBookingIds, return the user's booking session history from MongoDB
+finalResult = [];   
+MongoClient.connect(url,monoOptions, (err, client) => {
+    if(err) console.log(err);
+    const db = client.db(DB_NAME);
+    const userHistoryCollection = db.collection(COLLECTION_USER_HISTORY);
+    userHistoryCollection.find({"user_id":{$eq: [VAR_USER_ID]}}, {"session_history_of_booking": {"$in": [neo4jFilteredBookingIds]}}).toArray((err, items) => {
+        if (err) console.log(err);
+        finalResult = items;
+    })
+});
+console.log(finalResults); // Print booking sessions history
+// ...
+// DEMONSTRATION PURPOSES ONLY
 ```
 
 ```
@@ -127,46 +122,48 @@ ORACLE CONVERGED DATABASE
 ```
 
 ```js
-1   // JS
-2   // The Objective of the query is to return the user's session history of any BnB booked on 12/20/2020 which included 'friends' the user had been connected with for over 3 years
-3   // The variables "user_id", "bookings_data", "friendship_length" predefined
-4
-5   // Step 1: All of the data resides within a single-pluggable database, split between three different tables. The data can be joined together and pulled out with a single PL/SQL statement.
-6   // ...
-7   finalResult = [];
-8   oracledb.execute('', [], {outFormat: oracledb.ARRAY}
-9       ).then(result => {
-10          finalResult = result;
-11      }).catch(err => {
-12          console.log(err);
-13      });
-14
-15  console.log(finalResult); // Print final result
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42 // ...
+// DEMONSTRATION PURPOSES ONLY
+// JS
+// Use Case: Host-a-BnB (vacation rental company) wants to build a dashboard that visualizes sessions data of users who booked BnBs at a given date with long term friends (> 5 year). 
+// The query below will pull booking sessions data using predefined variables VAR_USER_ID, VAR_BOOKING_DATE, and VAR_FRIENDSHIP_LENGTH.
+// Step 1: All of the data resides within a single-pluggable database, split between three different tables. The data can be joined together and pulled out with a single PL/SQL statement.
+// ...
+finalResult = [];
+oracledb.execute(
+    `with booking_cte as ( 
+    SELECT BOOKING_ID from BOOKINGS WHERE USER_ID = :1 AND BOOKING_DATE = to_date(:2, 'MM/DD/YY')
+), relationship_cte as (
+    SELECT USER_ID, FRIEND_ID, RELATIONSHIP_TYPE, FRIENDSHIP_LENGTH, BOOKING_ID FROM RELATIONSHIPS
+    START WITH USER_ID = :3
+    CONNECT BY NOCYCLE PRIOR
+        USER_ID = FRIEND_ID
+), session_history_cte as (
+SELECT jt.BOOKING_ID, jt.USER_ID, jt.SESSION_HISTORY_DATA from SESSION_HISTORY,
+    json_table( json_doc, '$'
+        columns (
+            user_id    number path '$.user_id',
+            nested path '$.session_history_of_booking[*]' columns (
+                booking_id number path '$.booking_id',
+                session_history_data clob path '$.session_history_data'
+        ))
+    ) jt
+)SELECT s.SESSION_HISTORY_DATA FROM booking_cte b 
+    JOIN relationship_cte r ON r.BOOKING_ID = b.BOOKING_ID
+    JOIN session_history_cte s ON s.BOOKING_ID = r.BOOKING_ID
+WHERE r.FRIENDSHIP_LENGTH > :4`,
+    [VAR_USER_ID, VAR_BOOKING_DATE, VAR_USER_ID, VAR_FRIENDSHIP_LENGTH], {outFormat: oracledb.ARRAY}
+    ).then(result => {
+        finalResult = result;
+    }).catch(err => {
+        console.log(err);
+   });
+console.log(finalResult); // Print booking sessions history
+// ...
+// DEMONSTRATION PURPOSES ONLY
 ```
+
+
+
+Use Case: Host-a-BnB (vacation rental company) wants to build a dashboard that visualizes sessions data of users who booked BnBs at a given date with long term friends (> 5 year). 
+The query below will pull booking sessions data using predefined variables "user_id", "bookings_data", and "friendship_length".
+
